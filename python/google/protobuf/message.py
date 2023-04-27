@@ -66,10 +66,6 @@ class Message(object):
   # have an Extensions attribute with __getitem__ and __setitem__.
   # Again, not sure how to best convey this.
 
-  # TODO(robinson): Document that the class must also have a static
-  #   RegisterExtension(extension_field) method.
-  #   Not sure how to best express at this point.
-
   # TODO(robinson): Document these fields and methods.
 
   __slots__ = []
