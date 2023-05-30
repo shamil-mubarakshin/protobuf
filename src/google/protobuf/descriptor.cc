@@ -3599,8 +3599,10 @@ bool FieldDescriptor::has_presence() const {
 }
 
 bool FieldDescriptor::legacy_enum_field_treated_as_closed() const {
-  return type() == TYPE_ENUM && FileDescriptorLegacy(file_).syntax() ==
-                                    FileDescriptorLegacy::Syntax::SYNTAX_PROTO2;
+  return type() == TYPE_ENUM &&
+         (FileDescriptorLegacy(file_).syntax() ==
+              FileDescriptorLegacy::Syntax::SYNTAX_PROTO2 ||
+          enum_type()->is_closed());
 }
 
 // Location methods ===============================================
@@ -5910,7 +5912,7 @@ void DescriptorBuilder::BuildFieldOrExtension(const FieldDescriptorProto& proto,
   result->label_ = static_cast<FieldDescriptor::Label>(
       absl::implicit_cast<int>(proto.label()));
 
-  if (result->label_ == FieldDescriptor::LABEL_REQUIRED) {
+  if (result->is_required()) {
     // An extension cannot have a required field (b/13365836).
     if (result->is_extension_) {
       AddError(result->full_name(), proto,
@@ -8873,7 +8875,11 @@ void LazyDescriptor::Once(const ServiceDescriptor* service) {
 
 namespace cpp {
 bool HasPreservingUnknownEnumSemantics(const FieldDescriptor* field) {
-  return !field->legacy_enum_field_treated_as_closed();
+  if (field->legacy_enum_field_treated_as_closed()) {
+    return false;
+  }
+
+  return field->enum_type() != nullptr && !field->enum_type()->is_closed();
 }
 
 bool HasHasbit(const FieldDescriptor* field) {
