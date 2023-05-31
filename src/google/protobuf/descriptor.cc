@@ -2541,6 +2541,15 @@ bool FieldDescriptor::is_map_message_type() const {
   return type_descriptor_.message_type->options().map_entry();
 }
 
+bool FieldDescriptor::has_presence() const {
+  PROTOBUF_IGNORE_DEPRECATION_START
+  if (is_repeated()) return false;
+  return cpp_type() == CPPTYPE_MESSAGE || containing_oneof() ||
+         file()->syntax() == FileDescriptor::SYNTAX_PROTO2 ||
+         containing_type()->options().map_entry();
+  PROTOBUF_IGNORE_DEPRECATION_STOP
+}
+
 std::string FieldDescriptor::DefaultValueAsString(
     bool quote_string_type) const {
   ABSL_CHECK(has_default_value()) << "No default value";

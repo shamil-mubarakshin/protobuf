@@ -2569,14 +2569,6 @@ inline const OneofDescriptor* FieldDescriptor::real_containing_oneof() const {
   PROTOBUF_IGNORE_DEPRECATION_STOP
 }
 
-inline bool FieldDescriptor::has_presence() const {
-  PROTOBUF_IGNORE_DEPRECATION_START
-  if (is_repeated()) return false;
-  return cpp_type() == CPPTYPE_MESSAGE || containing_oneof() ||
-         file()->syntax() == FileDescriptor::SYNTAX_PROTO2;
-  PROTOBUF_IGNORE_DEPRECATION_STOP
-}
-
 inline bool FieldDescriptor::legacy_enum_field_treated_as_closed() const {
   PROTOBUF_IGNORE_DEPRECATION_START
   return type() == TYPE_ENUM &&
