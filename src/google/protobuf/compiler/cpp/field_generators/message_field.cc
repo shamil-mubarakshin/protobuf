@@ -784,14 +784,14 @@ void RepeatedMessage::GenerateInlineAccessorDefinitions(io::Printer* p) const {
       // TODO(dlj): move insertion points
       "  // @@protoc_insertion_point(field_mutable:$pkg.Msg.field$)\n"
       "$StrongRef$;"
-      "  return _internal_mutable_$name$()->Mutable(index);\n"
+      "  return $field_$$.weak$.Mutable(index);\n"
       "}\n"
       "inline $pb$::RepeatedPtrField< $Submsg$ >*\n"
       "$Msg$::mutable_$name$() {\n"
       "$annotate_mutable_list$"
       "  // @@protoc_insertion_point(field_mutable_list:$pkg.Msg.field$)\n"
       "$StrongRef$;"
-      "  return _internal_mutable_$name$();\n"
+      "  return &$field_$$.weak$;\n"
       "}\n");
 
   p->Emit({{"Get", opts_->safe_boundary_check ? "InternalCheckedGet" : "Get"},
@@ -805,10 +805,10 @@ void RepeatedMessage::GenerateInlineAccessorDefinitions(io::Printer* p) const {
           "$annotate_get$"
           "  // @@protoc_insertion_point(field_get:$pkg.Msg.field$)\n"
           "  $StrongRef$;"
-          "  return _internal_$name$().$Get$(index$GetExtraArg$);\n"
+          "  return $field_$$.weak$.$Get$(index$GetExtraArg$);\n"
           "}\n"
           "inline $Submsg$* $Msg$::add_$name$() {\n"
-          "  $Submsg$* _add = _internal_mutable_$name$()->Add();\n"
+          "  $Submsg$* _add = $field_$$.weak$.Add();\n"
           "$annotate_add_mutable$"
           "  // @@protoc_insertion_point(field_add:$pkg.Msg.field$)\n"
           "  return _add;\n"
@@ -820,7 +820,7 @@ void RepeatedMessage::GenerateInlineAccessorDefinitions(io::Printer* p) const {
       "$annotate_list$"
       "  // @@protoc_insertion_point(field_list:$pkg.Msg.field$)\n"
       "$StrongRef$;"
-      "  return _internal_$name$();\n"
+      "  return $field_$$.weak$;\n"
       "}\n");
 
   p->Emit(R"cc(
@@ -848,7 +848,7 @@ void RepeatedMessage::GenerateInlineAccessorDefinitions(io::Printer* p) const {
 }
 
 void RepeatedMessage::GenerateClearingCode(io::Printer* p) const {
-  p->Emit("_internal_mutable$_weak$_$name$()->Clear();\n");
+  p->Emit("$field_$.Clear();\n");
 }
 
 void RepeatedMessage::GenerateMergingCode(io::Printer* p) const {
